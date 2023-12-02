@@ -1,0 +1,7 @@
+{
+  "name": "advent-of-code-2023",
+  "author": "James Childers",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
