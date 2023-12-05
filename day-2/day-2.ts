@@ -1,13 +1,21 @@
 /**
  * https://adventofcode.com/2023/day/2
  */
-const { readFileSync } = require("fs");
-const path = require("path");
 
-const inputTextFile = readFileSync(
-  path.join(__dirname, "./input.txt"),
-  "utf-8",
-);
+export type GameRound = {
+  red?: number;
+  green?: number;
+  blue?: number;
+};
+
+export type Game = {
+  id: number;
+  rounds: Array<GameRound>;
+};
+
+const inputTextFile = await Bun.file(
+  `${import.meta.dir}/input.txt`,
+).text();
 
 /** @type {Array<Game>} */
 const games = inputTextFile
@@ -26,15 +34,6 @@ console.info(
 
 // =========================================================
 
-/** @typedef GameRound */
-/** @property {number} red */
-/** @property {number} green */
-/** @property {number} blue */
-
-/** @typedef Game */
-/** @property {number} id */
-/** @property {Array<GameRound>} rounds */
-
 /**
  * Determine which games would have been possible if the bag
  * had been loaded with only 12 red cubes, 13 green cubes,
@@ -42,19 +41,14 @@ console.info(
  *
  * What is the sum of the IDs of those games?
  *
- * @param {Array<Game>} games
  */
-function getSumOfPossibleGameIds(games) {
+function getSumOfPossibleGameIds(games: Game[]) {
   const ids = determinePossibleGameIds(games);
 
   return ids.reduce((acc, id) => acc + id, 0);
 }
 
-/**
- * @param {Array<Game>} games
- * @return {number}
- */
-function getSumOfMaxColors(games) {
+function getSumOfMaxColors(games: Game[]) {
   const maxColors = games.map(getMaxColorsForGame);
 
   return maxColors.reduce(
@@ -64,26 +58,18 @@ function getSumOfMaxColors(games) {
   );
 }
 
-/**
- * @param {Array<Game>} games
- * @return {Array<number>} possible ids
- */
-function determinePossibleGameIds(games) {
+function determinePossibleGameIds(games: Game[]) {
   return games
     .filter(isGamePossible)
     .map((game) => game.id);
 }
 
-/**
- * @param {Game} game
- * @return {boolean}
- */
-function isGamePossible(game) {
+function isGamePossible(game: Game) {
   for (const round of game.rounds) {
     if (
-      round.red > 12 ||
-      round.green > 13 ||
-      round.blue > 14
+      (round.red && round.red > 12) ||
+      (round.green && round.green > 13) ||
+      (round.blue && round.blue > 14)
     ) {
       return false;
     }
@@ -92,11 +78,7 @@ function isGamePossible(game) {
   return true;
 }
 
-/**
- * @param {Game} game
- * @return {{red: number, green: number, blue: number}}
- */
-function getMaxColorsForGame(game) {
+export function getMaxColorsForGame(game: Game) {
   const reds = [];
   const greens = [];
   const blues = [];
@@ -114,12 +96,7 @@ function getMaxColorsForGame(game) {
   };
 }
 
-/**
- *
- * @param {string} str
- * @return {Game}
- */
-function parseInput(str) {
+export function parseInput(str: string) {
   const id = parseInt(
     str.replace("Game ", "").split(":")[0],
   );
@@ -147,8 +124,3 @@ function parseInput(str) {
     rounds,
   };
 }
-
-module.exports = {
-  getMaxColorsForGame,
-  parseInput,
-};

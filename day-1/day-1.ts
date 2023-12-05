@@ -1,9 +1,7 @@
 /**
  * https://adventofcode.com/2023/day/1
  */
-
-const fs = require("fs");
-const path = require("path");
+import { Dict } from '@swan-io/boxed';
 
 // =========================================================
 
@@ -19,16 +17,12 @@ const numberWordsMap = {
   nine: 9,
 };
 
-const numberWords = Object.keys(numberWordsMap);
+const numberWords = Dict.keys(numberWordsMap);
 
 /**
  * Parse "digits" from string
- *
- * @param {string} str
- * @param {boolean} [withWords=false]
- * @return {number}
  */
-function parse(str, withWords = false) {
+export function parse(str: string, withWords: boolean = false): number {
   const matches = [];
 
   for (let i = 0; i < str.length; i++) {
@@ -54,7 +48,7 @@ function parse(str, withWords = false) {
   matches.sort((a, b) => a.index - b.index);
 
   const firstMatch = matches[0];
-  const lastMatch = matches.at(-1);
+  const lastMatch = matches.at(-1) || firstMatch;
 
   return parseInt(
     `${firstMatch.item}${lastMatch.item}`,
@@ -63,12 +57,8 @@ function parse(str, withWords = false) {
 
 /**
  * Get all indexes of searchItem in array
- *
- * @param {string | Array<string>} array
- * @param {string} searchItem
- * @return {Array<number>}
  */
-function indexOfAll(array, searchItem) {
+function indexOfAll(array: string | string[], searchItem: string): number[] {
   let i = array.indexOf(searchItem);
   const indexes = [];
 
@@ -80,13 +70,7 @@ function indexOfAll(array, searchItem) {
   return indexes;
 }
 
-/**
- *
- * @param {Array<string>} inputs
- * @param {boolean} withWords
- * @return {number}
- */
-function getTotal(inputs, withWords = false) {
+function getTotal(inputs: string[], withWords = false): number {
   let total = 0;
 
   for (let input of inputs) {
@@ -104,10 +88,7 @@ function getTotal(inputs, withWords = false) {
 
 // =========================================================
 
-const inputTextFile = fs.readFileSync(
-  path.join(__dirname, "./input.txt"),
-  "utf-8",
-);
+const inputTextFile = await Bun.file(import.meta.dir + '/input.txt').text();
 
 const strings = inputTextFile
   .split("\n")
@@ -123,8 +104,3 @@ console.info(
     true,
   )}`,
 );
-
-module.exports = {
-  parse,
-  getTotal,
-};

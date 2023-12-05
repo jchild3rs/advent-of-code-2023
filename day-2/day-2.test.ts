@@ -1,9 +1,11 @@
-const {
-  parseInput,
+import { describe, expect, it } from "bun:test";
+import {
+  Game,
   getMaxColorsForGame,
-} = require("./day-2");
+  parseInput,
+} from "./day-2";
 
-const gameFixture = {
+const gameFixture: Game = {
   id: 1,
   rounds: [
     { green: 4, blue: 2 },
